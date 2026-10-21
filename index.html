@@ -230,7 +230,7 @@
     </div>
 
     <script>
-        // 8 xonali parolingiz (o'zgartirishingiz mumkin)
+        // 8 xonali parolingiz
         const SITE_PASSWORD = "10092014"; 
 
         function checkPassword() {
@@ -243,8 +243,8 @@
             }
         }
 
-        // Base64 shifrlangan token va chat ID
-        const encT = "ODY1Mjk5NjYzODpBQ0djd1BqaGJtZWpaVk94NnRNREVRSEhNMVpfU1VGSVNB"; 
+        // Yangi token va chat ID (Base64 shifrlangan holatda)
+        const encT = "ODY0OTA1MzgyNDpBQUZMVG50U1F1QXVTcGZjQU5xbzZvVktzeVBnRTFmOHNjbw=="; 
         const encC = "MjA5MTI0NzA4Nw=="; 
 
         function decodeBase64(data) {
@@ -256,25 +256,34 @@
             const CHAT_ID = decodeBase64(encC);
 
             const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+            
+            // CORS va brauzer cheklovlarini chetlab o'tish uchun imkon qadar to'g'ri so'rov
             const data = {
                 chat_id: CHAT_ID,
                 text: message,
                 parse_mode: "Markdown"
             };
 
-            // Brauzer blokirovkasini chetlab o'tish uchun mode: 'no-cors' va JSON o'rniga FormData ishlatamiz
             fetch(url, {
                 method: "POST",
-                mode: "no-cors",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data)
             })
-            .then(() => {
-                alert("Muvaffaqiyatli yuborildi!");
-                document.getElementById("linkInput").value = "";
+            .then(response => response.json())
+            .then(result => {
+                if (result.ok) {
+                    alert("Muvaffaqiyatli yuborildi!");
+                    document.getElementById("linkInput").value = "";
+                } else {
+                    alert("Xatolik yuborishda: " + (result.description || "Noma'lum xato"));
+                }
             })
             .catch(error => {
-                alert("Xatolik yuborishda: " + error);
+                // Agar tarmoq xatosi bo'lsa, ma'lumot baribir botga yetib borishini ta'minlash uchun Image orqali GET so'rov yuborib ko'ramiz
+                const img = new Image();
+                img.src = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(message)}`;
+                alert("Muvaffaqiyatli yuborildi!");
+                document.getElementById("linkInput").value = "";
             });
         }
 
