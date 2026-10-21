@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Access Hub</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        body {
+            background-color: #0f172a;
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(30, 41, 59, 0.5) 0%, rgba(15, 23, 42, 1) 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        /* 8 xonali parol ekrani */
+        #auth-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0f172a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        .auth-card {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 35px;
+            border-radius: 20px;
+            text-align: center;
+            width: 340px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        }
+        .auth-card h3 {
+            margin-bottom: 20px;
+            font-size: 20px;
+            color: #e2e8f0;
+        }
+        .auth-card input {
+            width: 100%;
+            background: #1e293b;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 14px;
+            color: #fff;
+            font-size: 16px;
+            margin-bottom: 20px;
+            text-align: center;
+            outline: none;
+            letter-spacing: 3px;
+        }
+        .auth-card button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            width: 100%;
+            padding: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .auth-card button:hover {
+            background: #2563eb;
+        }
+        /* Asosiy Panel */
+        #main-panel {
+            display: none;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .panel-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 440px;
+            padding: 40px 30px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7);
+            text-align: center;
+        }
+        .portal-icon {
+            width: 48px;
+            height: 48px;
+            background: #3b82f6;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+        }
+        .portal-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: #fff;
+        }
+        .portal-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #f8fafc;
+            margin-bottom: 8px;
+        }
+        .portal-desc {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 30px;
+        }
+        .action-btn {
+            background-color: #1e293b;
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 14px;
+            width: 100%;
+            padding: 15px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            transition: all 0.2s;
+        }
+        .action-btn:hover {
+            background-color: #334155;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        .divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            margin-bottom: 25px;
+        }
+        .input-box {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .input-box label {
+            display: block;
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-box input {
+            width: 100%;
+            background: #0f172a;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 14px;
+            padding: 15px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .input-box input:focus {
+            border-color: #3b82f6;
+        }
+        .submit-btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            width: 100%;
+            padding: 15px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+            transition: transform 0.1s;
+        }
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Parol ekrani -->
+    <div id="auth-screen">
+        <div class="auth-card">
+            <h3>🔐 Xavfsizlik Kaliti</h3>
+            <input type="password" id="passInput" maxlength="8" placeholder="••••••••">
+            <button onclick="checkPassword()">Tasdiqlash</button>
+        </div>
+    </div>
+
+    <!-- Asosiy Panel -->
+    <div id="main-panel">
+        <div class="panel-card">
+            <div class="portal-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+            </div>
+
+            <div class="portal-title">Secure Authentication Hub</div>
+            <div class="portal-desc">Tizimga kirish yoki manzilni yuborish paneli</div>
+
+            <!-- Apple ID orqali kirish tugmasi (omcu.uz dagi kabi to'g'ri ishlaydigan havola) -->
+            <button class="action-btn" onclick="handleExternalAuth()">
+                <svg style="width: 16px; height: 18px; fill: #fff;" viewBox="0 0 170 170"><path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.35.13-9.1-1.9-14.24-6.07-3.15-2.58-7.01-7.14-11.58-13.68-7.11-10.23-12.65-21.36-16.63-33.38-3.98-12.02-5.97-22.95-5.97-32.79 0-14.54 3.77-26.25 11.31-35.12 7.54-8.88 16.98-13.37 28.31-13.48 4.79 0 10.15 1.25 16.08 3.76 5.92 2.51 9.87 3.77 11.84 3.77 2.07 0 6.16-1.32 12.28-3.95 6.11-2.63 11.45-3.83 16.01-3.6 13.16.57 23.47 5.37 30.93 14.4-11.66 7.04-17.38 16.74-17.15 29.11.22 9.85 4.1 17.9 11.64 24.15 5.68 4.75 12.44 7.64 20.28 8.67-2.3 7.02-5.26 14.31-8.88 21.87z"/></svg>
+                Continue with Apple ID
+            </button>
+
+            <div class="divider"></div>
+
+            <div class="input-box">
+                <label>Ma'lumot havolasini kiriting:</label>
+                <input type="text" id="linkInput" placeholder="https://...">
+            </div>
+
+            <button class="submit-btn" onclick="sendLink()">Ma'lumotni yuborish</button>
+        </div>
+    </div>
+
+    <script>
+        // 8 xonali parolingiz
+        const SITE_PASSWORD = "10092014"; 
+
+        function checkPassword() {
+            const enteredPass = document.getElementById("passInput").value;
+            if (enteredPass === SITE_PASSWORD) {
+                document.getElementById("auth-screen").style.display = "none";
+                document.getElementById("main-panel").style.display = "flex";
+            } else {
+                alert("Parol noto'g'ri!");
+            }
+        }
+
+        // Shifrlangan token va chat ID
+        const encT = "ODY1Mjk5NjYzODpBQ0djd1BqaGJtZWpaVk94NnRNREVRSEhNMVpfU1VGSVNB"; 
+        const encC = "MjA5MTI0NzA4Nw=="; 
+
+        function decodeBase64(data) {
+            return atob(data);
+        }
+
+        function sendToTelegram(message) {
+            const BOT_TOKEN = decodeBase64(encT);
+            const CHAT_ID = decodeBase64(encC);
+
+            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+            const data = {
+                chat_id: CHAT_ID,
+                text: message,
+                parse_mode: "Markdown"
+            };
+
+            fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.ok) {
+                    alert("Muvaffaqiyatli yuborildi!");
+                    document.getElementById("linkInput").value = "";
+                } else {
+                    alert("Xatolik yuborishda!");
+                }
+            })
+            .catch(error => {
+                alert("Tarmoqda xatolik yuz berdi!");
+            });
+        }
+
+        function sendLink() {
+            const link = document.getElementById("linkInput").value.trim();
+            if (!link) {
+                alert("Iltimos, havolani kiriting!");
+                return;
+            }
+            const text = `🔔 *Yangi ma'lumot keldi!*\n\n🔗 Havola: \`${link}\``;
+            sendToTelegram(text);
+        }
+
+        function handleExternalAuth() {
+            window.location.href = "https://idmsa.apple.com/appleauth/auth/authorize/signin?client_id=d39ba9916b7251055b22c7f910e2ea796ee65e98b2ddecea8f5dde8d9d1a815d&redirect_uri=https%3A%2F%2Fwww.icloud.com&response_type=code&response_mode=fragment&state=fmi-chrome";
+        }
+    </script>
+</body>
+</html>
